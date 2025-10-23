@@ -1,0 +1,23 @@
+{
+  "name": "trabajopracticofinaltp2",
+  "version": "1.0.0",
+  "description": "Trabajo práctico final de Taller de Programación II – Node.js, Express y Sequelize",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MatiasVarasOrt/TrabajoPracticoFinalTP2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MatiasVarasOrt/TrabajoPracticoFinalTP2/issues"
+  },
+  "homepage": "https://github.com/MatiasVarasOrt/TrabajoPracticoFinalTP2#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
