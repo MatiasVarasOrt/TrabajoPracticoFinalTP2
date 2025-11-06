@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { testConnection } from "./config/database.js";
-import cancionesRoutes from "./routes/canciones.js";
+import router from "./routes/router.js";
 
 dotenv.config();
 
@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
 });
 
 // Rutas de la API
-app.use("/api/canciones", cancionesRoutes);
+app.use("/api", router);
 
 // ========== MANEJO DE ERRORES 404 ==========
 app.use((req, res) => {
@@ -49,8 +49,8 @@ const startServer = async () => {
 
     app.listen(PORT, () => {
       console.log(`\n✅ Servidor Express escuchando en el puerto ${PORT}`);
-      console.log(`🌐 API: http://localhost:${PORT}`);
-      console.log(`🎵 Canciones: http://localhost:${PORT}/api/canciones\n`);
+      console.log(`API: http://localhost:${PORT}`);
+      console.log(`Canciones: http://localhost:${PORT}/api/canciones\n`);
     });
   } catch (error) {
     console.error("❌ Error al iniciar el servidor:", error);
