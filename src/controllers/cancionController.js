@@ -1,12 +1,8 @@
-import Cancion from "../models/Cancion.js";
-import { Op } from "sequelize";
+import cancionService from "../services/cancionService.js";
 
-// GET - Obtener todas las canciones
 export const getAllCanciones = async (req, res) => {
   try {
-    const canciones = await Cancion.findAll({
-      order: [["Name", "ASC"]],
-    });
+    const canciones = await cancionService.getAllCanciones();
 
     res.json({
       success: true,
@@ -23,19 +19,11 @@ export const getAllCanciones = async (req, res) => {
   }
 };
 
-// GET - Obtener una canción por ID
 export const getCancionById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const cancion = await Cancion.findByPk(id);
-
-    if (!cancion) {
-      return res.status(404).json({
-        success: false,
-        error: "Canción no encontrada",
-      });
-    }
+    const cancion = await cancionService.getCancionById(id);
 
     res.json({
       success: true,
@@ -43,6 +31,14 @@ export const getCancionById = async (req, res) => {
     });
   } catch (error) {
     console.error("Error al obtener canción:", error);
+
+    if (error.message === "Canción no encontrada") {
+      return res.status(404).json({
+        success: false,
+        error: error.message,
+      });
+    }
+
     res.status(500).json({
       success: false,
       error: "Error al obtener la canción",
@@ -51,23 +47,9 @@ export const getCancionById = async (req, res) => {
   }
 };
 
-// POST - Crear una nueva canción
 export const createCancion = async (req, res) => {
   try {
-    const { Name, Artista } = req.body;
-
-    // Validar datos requeridos
-    if (!Name || !Artista) {
-      return res.status(400).json({
-        success: false,
-        error: "Los campos Name y Artista son obligatorios",
-      });
-    }
-
-    const nuevaCancion = await Cancion.create({
-      Name,
-      Artista,
-    });
+    const nuevaCancion = await cancionService.createCancion(req.body);
 
     res.status(201).json({
       success: true,
@@ -77,11 +59,17 @@ export const createCancion = async (req, res) => {
   } catch (error) {
     console.error("Error al crear canción:", error);
 
-    if (error.name === "SequelizeValidationError") {
+    if (
+      error.name === "ValidationError" ||
+      error.name === "SequelizeValidationError"
+    ) {
       return res.status(400).json({
         success: false,
         error: "Error de validación",
-        details: error.errors.map((e) => e.message),
+        details:
+          error.name === "SequelizeValidationError"
+            ? error.errors.map((e) => e.message)
+            : error.message,
       });
     }
 
@@ -93,26 +81,10 @@ export const createCancion = async (req, res) => {
   }
 };
 
-// PUT - Actualizar una canción
 export const updateCancion = async (req, res) => {
   try {
     const { id } = req.params;
-    const { Name, Artista } = req.body;
-
-    const cancion = await Cancion.findByPk(id);
-
-    if (!cancion) {
-      return res.status(404).json({
-        success: false,
-        error: "Canción no encontrada",
-      });
-    }
-
-    // Actualizar solo los campos proporcionados
-    if (Name !== undefined) cancion.Name = Name;
-    if (Artista !== undefined) cancion.Artista = Artista;
-
-    await cancion.save();
+    const cancion = await cancionService.updateCancion(id, req.body);
 
     res.json({
       success: true,
@@ -121,6 +93,13 @@ export const updateCancion = async (req, res) => {
     });
   } catch (error) {
     console.error("Error al actualizar canción:", error);
+
+    if (error.message === "Canción no encontrada") {
+      return res.status(404).json({
+        success: false,
+        error: error.message,
+      });
+    }
 
     if (error.name === "SequelizeValidationError") {
       return res.status(400).json({
@@ -138,21 +117,10 @@ export const updateCancion = async (req, res) => {
   }
 };
 
-// DELETE - Eliminar una canción
 export const deleteCancion = async (req, res) => {
   try {
     const { id } = req.params;
-
-    const cancion = await Cancion.findByPk(id);
-
-    if (!cancion) {
-      return res.status(404).json({
-        success: false,
-        error: "Canción no encontrada",
-      });
-    }
-
-    await cancion.destroy();
+    await cancionService.deleteCancion(id);
 
     res.json({
       success: true,
@@ -160,6 +128,14 @@ export const deleteCancion = async (req, res) => {
     });
   } catch (error) {
     console.error("Error al eliminar canción:", error);
+
+    if (error.message === "Canción no encontrada") {
+      return res.status(404).json({
+        success: false,
+        error: error.message,
+      });
+    }
+
     res.status(500).json({
       success: false,
       error: "Error al eliminar la canción",
@@ -168,27 +144,10 @@ export const deleteCancion = async (req, res) => {
   }
 };
 
-// GET - Buscar canciones por nombre o artista
 export const searchCanciones = async (req, res) => {
   try {
     const { query } = req.query;
-
-    if (!query) {
-      return res.status(400).json({
-        success: false,
-        error: "El parámetro 'query' es requerido",
-      });
-    }
-
-    const canciones = await Cancion.findAll({
-      where: {
-        [Op.or]: [
-          { Name: { [Op.like]: `%${query}%` } },
-          { Artista: { [Op.like]: `%${query}%` } },
-        ],
-      },
-      order: [["Name", "ASC"]],
-    });
+    const canciones = await cancionService.searchCanciones(query);
 
     res.json({
       success: true,
@@ -197,6 +156,14 @@ export const searchCanciones = async (req, res) => {
     });
   } catch (error) {
     console.error("Error al buscar canciones:", error);
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        success: false,
+        error: error.message,
+      });
+    }
+
     res.status(500).json({
       success: false,
       error: "Error al buscar canciones",
