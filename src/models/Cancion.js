@@ -24,19 +24,13 @@ const Cancion = sequelize.define(
         },
       },
     },
-    Artista: {
-      type: DataTypes.STRING(200),
-      allowNull: false,
-      field: "Artista",
-      validate: {
-        notEmpty: {
-          msg: "El artista no puede estar vacío",
-        },
-        len: {
-          args: [1, 200],
-          msg: "El artista debe tener entre 1 y 200 caracteres",
-        },
-      },
+    ArtistaId: {
+     type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: "Artista",
+      key: "IdArtista"
+    },
     },
   },
   {
@@ -46,5 +40,10 @@ const Cancion = sequelize.define(
     updatedAt: "updatedAt",
   }
 );
-
+Cancion.associate = (models) => {
+  Cancion.belongsTo(models.Artista, {
+    foreignKey: "ArtistaId",
+    as: "Artista"
+  });
+};
 export default Cancion;
