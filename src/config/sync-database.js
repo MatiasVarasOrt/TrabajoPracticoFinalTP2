@@ -16,11 +16,11 @@ const syncDatabase = async () => {
     if (count === 0) {
       console.log("📝 Insertando canciones de ejemplo...");
       await Cancion.bulkCreate([
-        { Name: "Bohemian Rhapsody", Artista: "Queen" },
-        { Name: "Stairway to Heaven", Artista: "Led Zeppelin" },
-        { Name: "Hotel California", Artista: "Eagles" },
-        { Name: "Imagine", Artista: "John Lennon" },
-        { Name: "Smells Like Teen Spirit", Artista: "Nirvana" },
+        { Name: "Bohemian Rhapsody", IdArtista: 1 },
+        { Name: "Stairway to Heaven", IdArtista: 2 },
+        { Name: "Hotel California", IdArtista: 3 },
+        { Name: "Imagine", IdArtista: 4 },
+        { Name: "Smells Like Teen Spirit", IdArtista: 5 },
       ]);
       console.log("✅ Canciones de ejemplo insertadas");
     }

@@ -17,15 +17,15 @@ export class CancionService {
   }
 
   async createCancion(data) {
-    const { Name, Artista } = data;
+    const { Name, IdArtista } = data;
 
-    if (!Name || !Artista) {
-      const error = new Error("Los campos Name y Artista son obligatorios");
+    if (!Name || !IdArtista) {
+      const error = new Error("Los campos Name e IdArtista son obligatorios");
       error.name = "ValidationError";
       throw error;
     }
 
-    return await Cancion.create({ Name, Artista });
+    return await Cancion.create({ Name, IdArtista });
   }
 
   async updateCancion(id, data) {
@@ -35,10 +35,10 @@ export class CancionService {
       throw new Error("Canción no encontrada");
     }
 
-    const { Name, Artista } = data;
+    const { Name, IdArtista } = data;
 
     if (Name !== undefined) cancion.Name = Name;
-    if (Artista !== undefined) cancion.Artista = Artista;
+    if (IdArtista !== undefined) cancion.IdArtista = IdArtista;
 
     await cancion.save();
 
@@ -66,10 +66,7 @@ export class CancionService {
 
     return await Cancion.findAll({
       where: {
-        [Op.or]: [
-          { Name: { [Op.like]: `%${query}%` } },
-          { Artista: { [Op.like]: `%${query}%` } },
-        ],
+        Name: { [Op.like]: `%${query}%` },
       },
       order: [["Name", "ASC"]],
     });

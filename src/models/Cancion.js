@@ -24,26 +24,19 @@ const Cancion = sequelize.define(
         },
       },
     },
-    Artista: {
-      type: DataTypes.STRING(200),
+    IdArtista: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      field: "Artista",
+      field: "IdArtista",
       validate: {
-        notEmpty: {
-          msg: "El artista no puede estar vacío",
-        },
-        len: {
-          args: [1, 200],
-          msg: "El artista debe tener entre 1 y 200 caracteres",
+        isInt: {
+          msg: "El IdArtista debe ser un número entero",
         },
       },
     },
   },
   {
     tableName: "Canciones",
-    timestamps: true,
-    createdAt: "createdAt",
-    updatedAt: "updatedAt",
   }
 );
 
