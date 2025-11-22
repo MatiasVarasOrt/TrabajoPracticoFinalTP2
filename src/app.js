@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { testConnection } from "./config/database.js";
 import router from "./routes/router.js";
+import { initAssociations } from "./models/associations.js";
 
 dotenv.config();
 
@@ -46,6 +47,8 @@ const startServer = async () => {
     console.log("📊 Probando conexión a base de datos...");
 
     await testConnection();
+
+    initAssociations();
 
     app.listen(PORT, () => {
       console.log(`\n✅ Servidor Express escuchando en el puerto ${PORT}`);

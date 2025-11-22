@@ -23,6 +23,8 @@ const Cancion = sequelize.define(
           msg: "El nombre debe tener entre 1 y 200 caracteres",
         },
       },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     IdArtista: {
       type: DataTypes.INTEGER,
@@ -37,6 +39,7 @@ const Cancion = sequelize.define(
   },
   {
     tableName: "Canciones",
+    timestamps: false,
   }
 );
 

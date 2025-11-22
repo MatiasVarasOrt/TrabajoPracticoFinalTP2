@@ -10,11 +10,11 @@ import {
 
 const artistasRoutes = Router();
 
-cancionesRoutes.get("/search", searchArtistas);
-cancionesRoutes.get("/", getAllArtistas);
-cancionesRoutes.get("/:id", getArtistaById);
-cancionesRoutes.post("/", createArtista);
-cancionesRoutes.put("/:id", updateArtista);
-cancionesRoutes.delete("/:id", deleteArtista);
+artistasRoutes.get("/search", searchArtistas);
+artistasRoutes.get("/", getAllArtistas);
+artistasRoutes.get("/:id", getArtistaById);
+artistasRoutes.post("/", createArtista);
+artistasRoutes.put("/:id", updateArtista);
+artistasRoutes.delete("/:id", deleteArtista);
 
 export default artistasRoutes;

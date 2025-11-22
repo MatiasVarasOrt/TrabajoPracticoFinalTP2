@@ -6,19 +6,31 @@ export class ArtistaService {
   async getAllArtistas() {
     return await Artista.findAll({
       order: [["Name", "ASC"]],
-    }, {include: [{ model: Cancion, as: 'Canciones' }]
+      include: [
+        {
+          model: Cancion,
+          as: "Canciones",
+          attributes: ["IdCancion", "Name"],
+        },
+      ],
     });
   }
 
   async getArtistaById(id) {
-    const artista = await Artista.findByPk(id,
-        {include: [{ model: Cancion, as: 'Canciones' }]
-    }
-    );
+    const artista = await Artista.findByPk(id, {
+      include: [
+        {
+          model: Cancion,
+          as: "Canciones",
+          attributes: ["IdCancion", "Name"],
+        },
+      ],
+    });
 
     if (!artista) {
       throw new Error("Artista no encontrado");
     }
+
     return artista;
   }
 
@@ -26,12 +38,12 @@ export class ArtistaService {
     const { Name } = data;
 
     if (!Name) {
-      const error = new Error("El campos Name es necesario");
+      const error = new Error("El campo Name es necesario");
       error.name = "ValidationError";
       throw error;
     }
 
-    return await Artista.create(Name);
+    return await Artista.create({ Name }); // ← CORREGIDO: pasar objeto
   }
 
   async updateArtista(id, data) {
@@ -71,9 +83,7 @@ export class ArtistaService {
 
     return await Artista.findAll({
       where: {
-        [Op.or]: [
-          { Name: { [Op.like]: `%${query}%` } },
-        ],
+        Name: { [Op.like]: `%${query}%` },
       },
       order: [["Name", "ASC"]],
     });

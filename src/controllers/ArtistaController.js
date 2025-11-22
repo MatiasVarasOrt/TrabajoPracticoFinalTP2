@@ -1,7 +1,7 @@
 import artistaService from "../services/artistaService.js";
-import cancionService from "../services/artistaService.js";
 
 export const getAllArtistas = async (req, res) => {
+  debugger;
   try {
     const artista = await artistaService.getAllArtistas();
 
@@ -23,7 +23,7 @@ export const getAllArtistas = async (req, res) => {
 export const getArtistaById = async (req, res) => {
   try {
     const { id } = req.params;
-
+    debugger;
     const artista = await artistaService.getArtistaById(id);
 
     res.json({
@@ -50,6 +50,7 @@ export const getArtistaById = async (req, res) => {
 
 export const createArtista = async (req, res) => {
   try {
+    console.log("Datos recibidos para crear artista:", req.body);
     const nuevoArtista = await artistaService.createArtista(req.body);
 
     res.status(201).json({
@@ -89,7 +90,7 @@ export const updateArtista = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Canción actualizada exitosamente",
+      message: "Artista actualizado exitosamente",
       data: artista,
     });
   } catch (error) {

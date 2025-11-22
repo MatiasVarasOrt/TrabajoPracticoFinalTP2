@@ -2,27 +2,33 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 
 const Artista = sequelize.define(
-    "Artista",
-    {
-        IdArtista: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-            field: "IdArtista",
+  "Artista",
+  {
+    IdArtista: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      field: "IdArtista",
+    },
+    Name: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      field: "Name",
+      validate: {
+        notEmpty: {
+          msg: "El nombre del artista no puede estar vacío",
         },
-        Name: {
-            type: DataTypes.STRING(200),
-            allowNull: false,
-            field: "Name",
-    }
-}
+        len: {
+          args: [1, 100],
+          msg: "El nombre debe tener entre 1 y 100 caracteres",
+        },
+      },
+    },
+  },
+  {
+    tableName: "Artistas",
+    timestamps: false,
+  }
 );
-Artista.associate = (models) => {
-  Artista.hasMany(models.Cancion, {
-    foreignKey: "ArtistaId",
-    as: "Canciones"
-  });
-};
-
 
 export default Artista;
