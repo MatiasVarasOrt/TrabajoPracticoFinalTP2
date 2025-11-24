@@ -21,6 +21,7 @@ app.get("/", (req, res) => {
     version: "1.0.0",
     endpoints: {
       canciones: "/api/canciones",
+      playlists: "/api/playlists",
       docs: "Próximamente",
     },
   });
@@ -53,7 +54,8 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log(`\n✅ Servidor Express escuchando en el puerto ${PORT}`);
       console.log(`API: http://localhost:${PORT}`);
-      console.log(`Canciones: http://localhost:${PORT}/api/canciones\n`);
+      console.log(`Canciones: http://localhost:${PORT}/api/canciones`);
+      console.log(`Playlists: http://localhost:${PORT}/api/playlists\n`);
     });
   } catch (error) {
     console.error("❌ Error al iniciar el servidor:", error);
