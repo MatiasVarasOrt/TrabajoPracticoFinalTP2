@@ -1,10 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
 import { testConnection } from "./config/database.js";
 import router from "./routes/router.js";
 import { initAssociations } from "./models/associations.js";
 
-dotenv.config();
+
 
 const app = express();
 
