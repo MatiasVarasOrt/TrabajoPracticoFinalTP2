@@ -1,7 +1,8 @@
 import { sequelize } from "./database.js";
 import Cancion from "../models/Cancion.js";
 import Artista from "../models/Artista.js";
-import { initAssociations } from "../models/associations.js";
+import PlayList from "../models/PlayList.js";
+import PlaylistsCanciones from "../models/PlaylistsCanciones.js";
 
 const syncDatabase = async () => {
   try {
@@ -13,6 +14,8 @@ const syncDatabase = async () => {
     const models = sequelize.models;
     if (typeof Cancion.associate === "function") Cancion.associate(models);
     if (typeof Artista.associate === "function") Artista.associate(models);
+    if (typeof PlayList.associate === "function") PlayList.associate(models);
+    if (typeof PlaylistsCanciones.associate === "function") PlaylistsCanciones.associate(models);
 
     // alter: true modifica las tablas existentes sin borrar datos
     // force: true elimina y recrea las tablas (¡cuidado en producción!)

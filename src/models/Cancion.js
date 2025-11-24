@@ -42,5 +42,19 @@ const Cancion = sequelize.define(
     timestamps: false,
   }
 );
+Cancion.associate = (models) => {
+  Cancion.belongsTo(models.Artista, {
+    foreignKey: "ArtistaId",
+    as: "Artista"
+  });
 
+  if (models.PlayList) {
+    Cancion.belongsToMany(models.PlayList, {
+      through: models.PlaylistsCanciones || "PlaylistsCanciones",
+      foreignKey: "IdCancion",
+      otherKey: "IdPlaylist",
+      as: "Playlists"
+    });
+  }
+};
 export default Cancion;
