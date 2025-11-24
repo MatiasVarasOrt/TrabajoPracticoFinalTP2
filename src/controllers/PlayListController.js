@@ -156,3 +156,29 @@ export const deletePlaylist = async (req, res) => {
     });
   }
 };
+
+export const getPlaylistFollowers = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const playlist = await playListService.getPlaylistFollowers(id);
+    res.json({
+      success: true,
+      data: playlist,
+    });
+  } catch (error) {
+    console.error("Error al obtener followers de playlist:", error);
+
+    if (error.message === "Playlist no encontrada") {
+      return res.status(404).json({
+        success: false,
+        error: error.message,
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      error: "Error al obtener los followers de la playlist",
+      details: error.message,
+    });
+  }
+};

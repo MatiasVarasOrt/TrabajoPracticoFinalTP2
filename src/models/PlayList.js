@@ -34,16 +34,14 @@ const PlayList = sequelize.define(
     Followers: {
       type: DataTypes.JSON,
       allowNull: true,
-      defaultValue: null,
+      defaultValue: [],
       field: "Followers",
       comment: "Lista de usuarios que siguen la playlist",
     },
   },
   {
     tableName: "Playlists",
-    timestamps: true,
-    createdAt: "createdAt",
-    updatedAt: "updatedAt",
+    timestamps: false,
   }
 );
 

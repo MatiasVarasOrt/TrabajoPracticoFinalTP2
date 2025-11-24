@@ -24,7 +24,7 @@ class PlayListService {
 
     return await PlayList.findAll({
       where: { UserId: userId },
-      order: [["createdAt", "DESC"]],
+      order: [["IdPlaylist", "DESC"]],
     });
   }
 
@@ -77,6 +77,23 @@ class PlayListService {
 
     await playlist.destroy();
     return true;
+  }
+
+  async getPlaylistFollowers(id) {
+    const playlist = await PlayList.findByPk(id, {
+      attributes: ["IdPlaylist", "Name", "UserId", "Followers"],
+    });
+
+    if (!playlist) {
+      throw new Error("Playlist no encontrada");
+    }
+
+    return {
+      IdPlaylist: playlist.IdPlaylist,
+      Name: playlist.Name,
+      UserId: playlist.UserId,
+      Followers: playlist.Followers || [],
+    };
   }
 }
 
