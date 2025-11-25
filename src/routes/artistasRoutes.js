@@ -7,14 +7,14 @@ import {
   deleteArtista,
   searchArtistas,
 } from "../controllers/ArtistaController.js";
+import authenticate from "../middlewares/authenticate.js";
 
 const artistasRoutes = Router();
 
-artistasRoutes.get("/search", searchArtistas);
-artistasRoutes.get("/", getAllArtistas);
-artistasRoutes.get("/:id", getArtistaById);
-artistasRoutes.post("/", createArtista);
-artistasRoutes.put("/:id", updateArtista);
-artistasRoutes.delete("/:id", deleteArtista);
-
+artistasRoutes.get("/search", authenticate, searchArtistas);
+artistasRoutes.get("/", authenticate, getAllArtistas);
+artistasRoutes.get("/:id", authenticate, getArtistaById);
+artistasRoutes.post("/", authenticate, createArtista);
+artistasRoutes.put("/:id", authenticate, updateArtista);
+artistasRoutes.delete("/:id", authenticate, deleteArtista);
 export default artistasRoutes;

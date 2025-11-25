@@ -14,11 +14,17 @@ export default function authenticate(req, res, next) {
     // decodifica el JWT
     const user = verifyToken(token);
 
+    if (!user || !user.id) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token payload",
+      });
+    }
+
     // guardamos la info en req.user
     req.user = user;
 
     next();
-
   } catch (error) {
     return res.status(401).send({
       success: false,

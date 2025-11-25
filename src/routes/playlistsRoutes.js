@@ -8,15 +8,16 @@ import {
   getPlaylistsByUserId,
   updatePlaylistName,
 } from "../controllers/PlayListController.js";
+import authenticate from "../middlewares/authenticate.js";
 
 const router = Router();
 
-router.get("/", getAllPlaylists);
-router.get("/user/:userId", getPlaylistsByUserId);
-router.get("/:id", getPlaylistById);
-router.get("/:id/followers", getPlaylistFollowers);
-router.post("/", createPlaylist);
-router.put("/:id", updatePlaylistName);
-router.delete("/:id", deletePlaylist);
+router.get("/", authenticate, getAllPlaylists);
+router.get("/user/:userId", authenticate, getPlaylistsByUserId);
+router.get("/:id", authenticate, getPlaylistById);
+router.get("/:id/followers", authenticate, getPlaylistFollowers);
+router.post("/", authenticate, createPlaylist);
+router.put("/:id", authenticate, updatePlaylistName);
+router.delete("/:id", authenticate, deletePlaylist);
 
 export default router;
