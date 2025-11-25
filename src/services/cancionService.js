@@ -1,3 +1,4 @@
+import Artista from "../models/Artista.js";
 import Cancion from "../models/Cancion.js";
 import { Op } from "sequelize";
 
@@ -9,14 +10,27 @@ class CancionService {
   // GET /canciones
   getAllCanciones = async () => {
     const canciones = await this.cancion.findAll({
+      attributes: ["IdCancion", "Name"],
       order: [["IdCancion", "ASC"]],
+      include: {
+        model: Artista,
+        as: "Artista",
+        attributes: ["IdArtista", "Name"],
+      },
     });
     return canciones;
   };
 
   // GET /canciones/:id
   getCancionById = async (id) => {
-    const cancion = await this.cancion.findByPk(id);
+    const cancion = await this.cancion.findByPk(id, {
+      attributes: ["IdCancion", "Name"],
+      include: {
+        model: Artista,
+        as: "Artista",
+        attributes: ["IdArtista", "Name"],
+      },
+    });
     if (!cancion) {
       throw new Error("Canción no encontrada");
     }
@@ -27,13 +41,31 @@ class CancionService {
   createCancion = async (data) => {
     const { Name, IdArtista } = data;
 
-    if (!Name || !IdArtista) {
-      const error = new Error("Los campos Name e IdArtista son obligatorios");
+    if (!Name || Name.trim() === "") {
+      const error = new Error("El campo Name es obligatorio");
       error.name = "ValidationError";
       throw error;
     }
 
-    return await this.cancion.create({ Name, IdArtista });
+    if (!IdArtista || typeof IdArtista !== "number" || IdArtista <= 0) {
+      const error = new Error(
+        "El campo IdArtista debe ser un número válido mayor a 0"
+      );
+      error.name = "ValidationError";
+      throw error;
+    }
+
+    const nuevaCancion = await this.cancion.create({ Name, IdArtista });
+
+    // Recargar con el artista incluido
+    return await this.cancion.findByPk(nuevaCancion.IdCancion, {
+      attributes: ["IdCancion", "Name"],
+      include: {
+        model: Artista,
+        as: "Artista",
+        attributes: ["IdArtista", "Name"],
+      },
+    });
   };
 
   // PUT /canciones/:id
@@ -42,12 +74,48 @@ class CancionService {
 
     const { Name, IdArtista } = data;
 
-    if (Name !== undefined) cancion.Name = Name;
-    if (IdArtista !== undefined) cancion.IdArtista = IdArtista;
+    // Validar Name si se proporciona
+    if (Name !== undefined) {
+      if (typeof Name !== "string" || Name.trim() === "") {
+        const error = new Error("El campo Name debe ser un texto no vacío");
+        error.name = "ValidationError";
+        throw error;
+      }
+      cancion.Name = Name.trim();
+    }
+
+    // Validar IdArtista si se proporciona
+    if (IdArtista !== undefined) {
+      if (typeof IdArtista !== "number" || IdArtista <= 0) {
+        const error = new Error(
+          "El campo IdArtista debe ser un número válido mayor a 0"
+        );
+        error.name = "ValidationError";
+        throw error;
+      }
+
+      // Verificar que el artista existe
+      const artista = await Artista.findByPk(IdArtista);
+      if (!artista) {
+        const error = new Error(`El artista con ID ${IdArtista} no existe`);
+        error.name = "ValidationError";
+        throw error;
+      }
+
+      cancion.IdArtista = IdArtista;
+    }
 
     await cancion.save();
 
-    return cancion;
+    // Recargar con formato correcto (incluir artista)
+    return await this.cancion.findByPk(id, {
+      attributes: ["IdCancion", "Name"],
+      include: {
+        model: Artista,
+        as: "Artista",
+        attributes: ["IdArtista", "Name"],
+      },
+    });
   };
 
   // DELETE /canciones/:id
@@ -72,6 +140,11 @@ class CancionService {
         Name: { [Op.like]: `%${query}%` },
       },
       order: [["IdCancion", "ASC"]],
+      include: {
+        model: Artista,
+        as: "Artista",
+        attributes: ["IdArtista", "Name"],
+      },
     });
   };
 }
