@@ -1,17 +1,18 @@
 import express from "express";
 import dotenv from "dotenv";
-dotenv.config();
 import { testConnection } from "./config/database.js";
 import router from "./routes/router.js";
 import { initAssociations } from "./models/associations.js";
+import cookieParser from "cookie-parser";
 
-
+dotenv.config();
 
 const app = express();
 
 // ========== MIDDLEWARES ==========
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // ========== RUTAS ==========
 // Ruta raíz
