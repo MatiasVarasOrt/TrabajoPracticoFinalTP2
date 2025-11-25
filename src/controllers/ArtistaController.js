@@ -1,5 +1,5 @@
 
-class CancionController {
+class ArtistaController {
   constructor(service) {
     this.artistaService = service;
   }
@@ -176,5 +176,5 @@ searchArtistas = async (req, res) => {
   }
 };
 }
-export default CancionController;
+export default ArtistaController;
 
