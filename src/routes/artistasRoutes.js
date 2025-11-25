@@ -1,20 +1,14 @@
 import { Router } from "express";
-import {
-  getAllArtistas,
-  getArtistaById,
-  createArtista,
-  updateArtista,
-  deleteArtista,
-  searchArtistas,
-} from "../controllers/ArtistaController.js";
+import { artistaController } from "../container/container.js";
+
 
 const artistasRoutes = Router();
 
-artistasRoutes.get("/search", searchArtistas);
-artistasRoutes.get("/", getAllArtistas);
-artistasRoutes.get("/:id", getArtistaById);
-artistasRoutes.post("/", createArtista);
-artistasRoutes.put("/:id", updateArtista);
-artistasRoutes.delete("/:id", deleteArtista);
+artistasRoutes.get("/search", artistaController.searchArtistas);
+artistasRoutes.get("/", artistaController.getAllArtistas);
+artistasRoutes.get("/:id", artistaController.getArtistaById);
+artistasRoutes.post("/", artistaController.createArtista);
+artistasRoutes.put("/:id", artistaController.updateArtista);
+artistasRoutes.delete("/:id", artistaController.deleteArtista);
 
 export default artistasRoutes;

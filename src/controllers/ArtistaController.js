@@ -1,6 +1,9 @@
-import artistaService from "../services/artistaService.js";
 
-export const getAllArtistas = async (req, res) => {
+class CancionController {
+  constructor(service) {
+    this.artistaService = service;
+  }
+getAllArtistas = async (req, res) => {
   debugger;
   try {
     const artista = await artistaService.getAllArtistas();
@@ -19,8 +22,7 @@ export const getAllArtistas = async (req, res) => {
     });
   }
 };
-
-export const getArtistaById = async (req, res) => {
+getArtistaById = async (req, res) => {
   try {
     const { id } = req.params;
     debugger;
@@ -48,7 +50,7 @@ export const getArtistaById = async (req, res) => {
   }
 };
 
-export const createArtista = async (req, res) => {
+createArtista = async (req, res) => {
   try {
     console.log("Datos recibidos para crear artista:", req.body);
     const nuevoArtista = await artistaService.createArtista(req.body);
@@ -83,7 +85,7 @@ export const createArtista = async (req, res) => {
   }
 };
 
-export const updateArtista = async (req, res) => {
+updateArtista = async (req, res) => {
   try {
     const { id } = req.params;
     const artista = await artistaService.updateArtista(id, req.body);
@@ -119,7 +121,7 @@ export const updateArtista = async (req, res) => {
   }
 };
 
-export const deleteArtista = async (req, res) => {
+deleteArtista = async (req, res) => {
   try {
     const { id } = req.params;
     await artistaService.deleteArtista(id);
@@ -146,7 +148,7 @@ export const deleteArtista = async (req, res) => {
   }
 };
 
-export const searchArtistas = async (req, res) => {
+searchArtistas = async (req, res) => {
   try {
     const { query } = req.query;
     const artista = await artistaService.searchArtistas(query);
@@ -173,3 +175,6 @@ export const searchArtistas = async (req, res) => {
     });
   }
 };
+}
+export default CancionController;
+

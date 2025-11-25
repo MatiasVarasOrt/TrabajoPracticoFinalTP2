@@ -2,9 +2,13 @@ import Artista from "../models/Artista.js";
 import Cancion from "../models/Cancion.js";
 import { Op } from "sequelize";
 
-export class ArtistaService {
+class ArtistaService {
+  constructor(artista) {
+    this.artista = artista;
+  }
+
   async getAllArtistas() {
-    return await Artista.findAll({
+    return await this.artista.findAll({
       order: [["Name", "ASC"]],
       include: [
         {
@@ -17,7 +21,7 @@ export class ArtistaService {
   }
 
   async getArtistaById(id) {
-    const artista = await Artista.findByPk(id, {
+    const artista = await this.artista.findByPk(id, {
       include: [
         {
           model: Cancion,
@@ -47,7 +51,7 @@ export class ArtistaService {
   }
 
   async updateArtista(id, data) {
-    const artista = await Artista.findByPk(id);
+    const artista = await this.artista.findByPk(id);
 
     if (!artista) {
       throw new Error("Artista no encontrado");
@@ -63,7 +67,7 @@ export class ArtistaService {
   }
 
   async deleteArtista(id) {
-    const artista = await Artista.findByPk(id);
+    const artista = await this.artista.findByPk(id);
 
     if (!artista) {
       throw new Error("Artista no encontrado");
@@ -81,7 +85,7 @@ export class ArtistaService {
       throw error;
     }
 
-    return await Artista.findAll({
+    return await this.artista.findAll({
       where: {
         Name: { [Op.like]: `%${query}%` },
       },
@@ -90,4 +94,4 @@ export class ArtistaService {
   }
 }
 
-export default new ArtistaService();
+export default ArtistaService;
