@@ -1,15 +1,21 @@
 import { generateToken } from "../utils/jwt.js";
 import { Op } from "sequelize";
+import Role from "../models/Role.js";
 
 class UserService {
-  constructor(user) {
+  constructor(user , role) {
     this.user = user;
+    this.role = role;
   }
 
   // GET /users
   getAllUsers = async () => {
     const users = await this.user.findAll({
-      attributes: ["id", "name", "mail"],
+      attributes: ["id", "name", "mail", "roleId"],
+      include: {
+        model: this.role,
+        attributes: ["roleName"],
+      },
     });
     return users;
   };

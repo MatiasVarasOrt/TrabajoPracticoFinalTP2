@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Role from "../models/Role.js";
 import UserService from "../services/UserService.js";
 import UserController from "../controllers/UserController.js";
 import CancionService from "../services/cancionService.js";
@@ -8,8 +9,7 @@ import artistaService from "../services/artistaService.js";
 import ArtistaController from "../controllers/ArtistaController.js";
 import Artista from "../models/Artista.js";
 
-//Usuarios
-const userService = new UserService(User);
+const userService = new UserService(User, Role);
 const userController = new UserController(userService);
 
 //Canciones

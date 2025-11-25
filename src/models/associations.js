@@ -1,6 +1,7 @@
 import Artista from "./Artista.js";
 import Cancion from "./Cancion.js";
 import User from "./User.js";
+import Role from "./Role.js";
 import Playlist from "./PlayList.js";
 
 /**
@@ -24,6 +25,9 @@ export function initAssociations() {
     foreignKey: "userId",
     as: "playlists",
   });
+
+  Role.hasMany(User, { foreignKey: "roleId" });
+  User.belongsTo(Role, { foreignKey: "roleId" });
 
   console.log("✅ Asociaciones de modelos inicializadas");
 }

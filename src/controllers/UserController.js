@@ -30,6 +30,7 @@ class UserController {
         name,
         mail,
         pass,
+        roleId,
       });
 
       res.status(200).send({
