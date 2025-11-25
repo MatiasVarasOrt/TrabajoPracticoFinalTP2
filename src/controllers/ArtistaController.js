@@ -3,30 +3,29 @@ class ArtistaController {
   constructor(service) {
     this.artistaService = service;
   }
-getAllArtistas = async (req, res) => {
-  debugger;
-  try {
-    const artista = await artistaService.getAllArtistas();
+  getAllArtistas = async (req, res) => {
+    try {
+      const artista = await this.artistaService.getAllArtistas();
 
-    res.json({
-      success: true,
-      count: artista.length,
-      data: artista,
-    });
-  } catch (error) {
-    console.error("Error al obtener artistas:", error);
-    res.status(500).json({
-      success: false,
-      error: "Error al obtener los artistas",
-      details: error.message,
-    });
-  }
-};
+      res.json({
+        success: true,
+        count: artista.length,
+        data: artista,
+      });
+    } catch (error) {
+      console.error("Error al obtener artistas:", error);
+      res.status(500).json({
+        success: false,
+        error: "Error al obtener los artistas",
+        details: error.message,
+      });
+    }
+  };
 getArtistaById = async (req, res) => {
   try {
     const { id } = req.params;
     debugger;
-    const artista = await artistaService.getArtistaById(id);
+    const artista = await this.artistaService.getArtistaById(id);
 
     res.json({
       success: true,
@@ -53,7 +52,7 @@ getArtistaById = async (req, res) => {
 createArtista = async (req, res) => {
   try {
     console.log("Datos recibidos para crear artista:", req.body);
-    const nuevoArtista = await artistaService.createArtista(req.body);
+    const nuevoArtista = await this.artistaService.createArtista(req.body);
 
     res.status(201).json({
       success: true,
@@ -88,7 +87,7 @@ createArtista = async (req, res) => {
 updateArtista = async (req, res) => {
   try {
     const { id } = req.params;
-    const artista = await artistaService.updateArtista(id, req.body);
+    const artista = await this.artistaService.updateArtista(id, req.body);
 
     res.json({
       success: true,
@@ -151,7 +150,7 @@ deleteArtista = async (req, res) => {
 searchArtistas = async (req, res) => {
   try {
     const { query } = req.query;
-    const artista = await artistaService.searchArtistas(query);
+    const artista = await this.artistaService.searchArtistas(query);
 
     res.json({
       success: true,
