@@ -1,20 +1,13 @@
-import { Router } from "express";
-import {
-  getAllCanciones,
-  getCancionById,
-  createCancion,
-  updateCancion,
-  deleteCancion,
-  searchCanciones,
-} from "../controllers/cancionController.js";
+import express from "express";
+import { cancionController } from "../container/container.js";
 
-const cancionesRoutes = Router();
+const router = express.Router();
 
-cancionesRoutes.get("/search", searchCanciones);
-cancionesRoutes.get("/", getAllCanciones);
-cancionesRoutes.get("/:id", getCancionById);
-cancionesRoutes.post("/", createCancion);
-cancionesRoutes.put("/:id", updateCancion);
-cancionesRoutes.delete("/:id", deleteCancion);
+router.get("/search", cancionController.searchCanciones);
+router.get("/", cancionController.getAllCanciones);
+router.get("/:id", cancionController.getCancionById);
+router.post("/", cancionController.createCancion);
+router.put("/:id", cancionController.updateCancion);
+router.delete("/:id", cancionController.deleteCancion);
 
-export default cancionesRoutes;
+export default router;

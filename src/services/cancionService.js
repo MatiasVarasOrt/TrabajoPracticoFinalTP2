@@ -1,22 +1,30 @@
 import Cancion from "../models/Cancion.js";
 import { Op } from "sequelize";
 
-export class CancionService {
-  async getAllCanciones() {
-    return await Cancion.findAll({
-      order: [["Name", "ASC"]],
-    });
+class CancionService {
+  constructor(cancion) {
+    this.cancion = cancion;
   }
 
-  async getCancionById(id) {
-    const cancion = await Cancion.findByPk(id);
+  // GET /canciones
+  getAllCanciones = async () => {
+    const canciones = await this.cancion.findAll({
+      order: [["IdCancion", "ASC"]],
+    });
+    return canciones;
+  };
+
+  // GET /canciones/:id
+  getCancionById = async (id) => {
+    const cancion = await this.cancion.findByPk(id);
     if (!cancion) {
       throw new Error("Canción no encontrada");
     }
     return cancion;
-  }
+  };
 
-  async createCancion(data) {
+  // POST /canciones
+  createCancion = async (data) => {
     const { Name, IdArtista } = data;
 
     if (!Name || !IdArtista) {
@@ -25,15 +33,12 @@ export class CancionService {
       throw error;
     }
 
-    return await Cancion.create({ Name, IdArtista });
-  }
+    return await this.cancion.create({ Name, IdArtista });
+  };
 
-  async updateCancion(id, data) {
-    const cancion = await Cancion.findByPk(id);
-
-    if (!cancion) {
-      throw new Error("Canción no encontrada");
-    }
+  // PUT /canciones/:id
+  updateCancion = async (id, data) => {
+    const cancion = await this.getCancionById(id);
 
     const { Name, IdArtista } = data;
 
@@ -43,34 +48,32 @@ export class CancionService {
     await cancion.save();
 
     return cancion;
-  }
+  };
 
-  async deleteCancion(id) {
-    const cancion = await Cancion.findByPk(id);
-
-    if (!cancion) {
-      throw new Error("Canción no encontrada");
-    }
+  // DELETE /canciones/:id
+  deleteCancion = async (id) => {
+    const cancion = await this.getCancionById(id);
 
     await cancion.destroy();
 
     return true;
-  }
+  };
 
-  async searchCanciones(query) {
+  // GET /canciones/search?query=
+  searchCanciones = async (query) => {
     if (!query) {
       const error = new Error("El parámetro 'query' es requerido");
       error.name = "ValidationError";
       throw error;
     }
 
-    return await Cancion.findAll({
+    return await this.cancion.findAll({
       where: {
         Name: { [Op.like]: `%${query}%` },
       },
-      order: [["Name", "ASC"]],
+      order: [["IdCancion", "ASC"]],
     });
-  }
+  };
 }
 
-export default new CancionService();
+export default CancionService;
