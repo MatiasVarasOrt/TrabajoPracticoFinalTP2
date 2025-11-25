@@ -1,7 +1,7 @@
 import Artista from "./Artista.js";
 import Cancion from "./Cancion.js";
 import User from "./User.js";
-import Playlist from "./Playlist.js";
+import Playlist from "./PlayList.js";
 
 /**
  * Inicializa todas las asociaciones entre modelos
