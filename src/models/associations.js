@@ -1,5 +1,7 @@
 import Artista from "./Artista.js";
 import Cancion from "./Cancion.js";
+import User from "./User.js";
+import Playlist from "./Playlist.js";
 
 /**
  * Inicializa todas las asociaciones entre modelos
@@ -16,6 +18,11 @@ export function initAssociations() {
   Cancion.belongsTo(Artista, {
     foreignKey: "IdArtista",
     as: "Artista",
+  });
+
+  User.hasMany(Playlist, {
+    foreignKey: "userId",
+    as: "playlists",
   });
 
   console.log("✅ Asociaciones de modelos inicializadas");
