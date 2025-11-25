@@ -21,13 +21,29 @@ export function initAssociations() {
     as: "Artista",
   });
 
+  // Asociación: Un Usuario pertenece a un Rol
+  User.belongsTo(Role, {
+    foreignKey: "roleId",
+    as: "Role",
+  });
+
+  // Asociación: Un Rol tiene muchos Usuarios
+  Role.hasMany(User, {
+    foreignKey: "roleId",
+    as: "Users",
+  });
+
+  // Asociación: Un Usuario tiene muchas Playlists
   User.hasMany(Playlist, {
     foreignKey: "userId",
     as: "playlists",
   });
 
-  Role.hasMany(User, { foreignKey: "roleId" });
-  User.belongsTo(Role, { foreignKey: "roleId" });
+  // Asociación: Una Playlist pertenece a un Usuario
+  Playlist.belongsTo(User, {
+    foreignKey: "userId",
+    as: "Owner",
+  });
 
   console.log("✅ Asociaciones de modelos inicializadas");
 }

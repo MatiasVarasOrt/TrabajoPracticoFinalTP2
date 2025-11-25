@@ -31,12 +31,12 @@ User.init(
       allowNull: false,
       defaultValue: 2,
     },
-    
   },
   {
     sequelize,
     modelName: "User",
     tableName: "Users",
+    timestamps: false,
   }
 );
 

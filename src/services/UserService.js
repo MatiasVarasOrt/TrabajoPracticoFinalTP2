@@ -3,7 +3,7 @@ import { Op } from "sequelize";
 import Role from "../models/Role.js";
 
 class UserService {
-  constructor(user , role) {
+  constructor(user, role) {
     this.user = user;
     this.role = role;
   }
@@ -14,8 +14,10 @@ class UserService {
       attributes: ["id", "name", "mail", "roleId"],
       include: {
         model: this.role,
-        attributes: ["roleName"],
+        as: "Role",
+        attributes: ["id", "roleName"],
       },
+      order: [["id", "ASC"]],
     });
     return users;
   };
@@ -58,17 +60,24 @@ class UserService {
   };
 
   async getUserById(id) {
-    const user = await this.user.findByPk(id);
+    const user = await this.user.findByPk(id, {
+      attributes: ["id", "name", "mail", "roleId"],
+      include: {
+        model: this.role,
+        as: "Role",
+        attributes: ["id", "roleName"],
+      },
+    });
     if (!user) {
       throw new Error("Usuario no encontrado");
     }
     return user;
   }
 
-async updateUser(id, data) {
+  async updateUser(id, data) {
     const user = await this.getUserById(id);
 
-    const { name , mail } = data;
+    const { name, mail } = data;
 
     if (name !== undefined) user.name = name;
     if (mail !== undefined) user.mail = mail;
@@ -79,7 +88,7 @@ async updateUser(id, data) {
   }
 
   async deleteUser(id) {
-    const user = await this.getUserById(id)
+    const user = await this.getUserById(id);
 
     await user.destroy();
 
@@ -94,8 +103,14 @@ async updateUser(id, data) {
     }
 
     return await this.user.findAll({
+      attributes: ["id", "name", "mail", "roleId"],
       where: {
         name: { [Op.like]: `%${query}%` },
+      },
+      include: {
+        model: this.role,
+        as: "Role",
+        attributes: ["id", "roleName"],
       },
       order: [["name", "ASC"]],
     });
