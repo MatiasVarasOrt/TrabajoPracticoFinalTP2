@@ -1,22 +1,21 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database.js";
 
-const PlayList = sequelize.define(
-  "PlayList",
+class PlayList extends Model {}
+
+PlayList.init(
   {
     IdPlaylist: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-      field: "IdPlaylist",
     },
-    UserId: {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: "UserId",
       references: {
         model: "Users",
-        key: "IdUser",
+        key: "id",
       },
       onUpdate: "CASCADE",
       onDelete: "CASCADE",
@@ -24,7 +23,6 @@ const PlayList = sequelize.define(
     Name: {
       type: DataTypes.STRING(200),
       allowNull: false,
-      field: "Name",
       validate: {
         notEmpty: {
           msg: "El nombre de la playlist es obligatorio",
@@ -35,32 +33,14 @@ const PlayList = sequelize.define(
       type: DataTypes.JSON,
       allowNull: true,
       defaultValue: [],
-      field: "Followers",
-      comment: "Lista de usuarios que siguen la playlist",
     },
   },
   {
+    sequelize,
+    modelName: "PlayList",
     tableName: "Playlists",
     timestamps: false,
   }
 );
-
-PlayList.associate = (models) => {
-  if (models.User) {
-    PlayList.belongsTo(models.User, {
-      foreignKey: "UserId",
-      as: "Owner",
-    });
-  }
-
-  if (models.Cancion) {
-    PlayList.belongsToMany(models.Cancion, {
-      through: models.PlaylistsCanciones || "PlaylistsCanciones",
-      foreignKey: "IdPlaylist",
-      otherKey: "IdCancion",
-      as: "Canciones",
-    });
-  }
-};
 
 export default PlayList;

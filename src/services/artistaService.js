@@ -1,4 +1,3 @@
-import Artista from "../models/Artista.js";
 import Cancion from "../models/Cancion.js";
 import { Op } from "sequelize";
 
@@ -7,7 +6,7 @@ class ArtistaService {
     this.artista = artista;
   }
 
-  async getAllArtistas() {
+  getAllArtistas = async () => {
     return await this.artista.findAll({
       order: [["Name", "ASC"]],
       include: [
@@ -18,7 +17,7 @@ class ArtistaService {
         },
       ],
     });
-  }
+  };
 
   async getArtistaById(id) {
     const artista = await this.artista.findByPk(id, {
@@ -47,7 +46,7 @@ class ArtistaService {
       throw error;
     }
 
-    return await Artista.create({ Name }); // ← CORREGIDO: pasar objeto
+    return await this.artista.create({ Name });
   }
 
   async updateArtista(id, data) {

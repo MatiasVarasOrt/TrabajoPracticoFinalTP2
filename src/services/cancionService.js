@@ -1,5 +1,4 @@
 import Artista from "../models/Artista.js";
-import Cancion from "../models/Cancion.js";
 import { Op } from "sequelize";
 
 class CancionService {
@@ -7,7 +6,6 @@ class CancionService {
     this.cancion = cancion;
   }
 
-  // GET /canciones
   getAllCanciones = async () => {
     const canciones = await this.cancion.findAll({
       attributes: ["IdCancion", "Name"],
@@ -21,7 +19,6 @@ class CancionService {
     return canciones;
   };
 
-  // GET /canciones/:id
   getCancionById = async (id) => {
     const cancion = await this.cancion.findByPk(id, {
       attributes: ["IdCancion", "Name"],
@@ -37,7 +34,6 @@ class CancionService {
     return cancion;
   };
 
-  // POST /canciones
   createCancion = async (data) => {
     const { Name, IdArtista } = data;
 
@@ -57,7 +53,7 @@ class CancionService {
 
     const nuevaCancion = await this.cancion.create({ Name, IdArtista });
 
-    // Recargar con el artista incluido
+    // se incluye al artista en la respuesta
     return await this.cancion.findByPk(nuevaCancion.IdCancion, {
       attributes: ["IdCancion", "Name"],
       include: {
@@ -68,7 +64,6 @@ class CancionService {
     });
   };
 
-  // PUT /canciones/:id
   updateCancion = async (id, data) => {
     const cancion = await this.getCancionById(id);
 
@@ -107,7 +102,7 @@ class CancionService {
 
     await cancion.save();
 
-    // Recargar con formato correcto (incluir artista)
+    // se incluye al artista en la respuesta
     return await this.cancion.findByPk(id, {
       attributes: ["IdCancion", "Name"],
       include: {
@@ -118,7 +113,6 @@ class CancionService {
     });
   };
 
-  // DELETE /canciones/:id
   deleteCancion = async (id) => {
     const cancion = await this.getCancionById(id);
 
@@ -127,7 +121,6 @@ class CancionService {
     return true;
   };
 
-  // GET /canciones/search?query=
   searchCanciones = async (query) => {
     if (!query) {
       const error = new Error("El parámetro 'query' es requerido");
