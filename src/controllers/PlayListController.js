@@ -195,6 +195,47 @@ class PlayListController {
     }
   };
 
+  followPlaylist = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const followerUserId = req.user?.id ?? req.body.userId ?? req.body.UserId;
+
+      const result = await this.playlistService.followPlaylist(
+        id,
+        followerUserId
+      );
+
+      res.json({
+        success: true,
+        message: result.alreadyFollowing
+          ? "Ya seguis esta playlist"
+          : "Ahora seguis la playlist",
+        data: {
+          IdPlaylist: result.IdPlaylist,
+          Name: result.Name,
+          userId: result.userId,
+          Followers: result.Followers,
+        },
+      });
+    } catch (error) {
+      console.error("Error al seguir playlist", error);
+
+      if (error.message === "Playlist no encontrada") {
+        return res.status(404).json({
+          success: false,
+          error: error.message,
+        });
+      }
+
+
+      res.status(500).json({
+        success: false,
+        error: "Error al seguir la playlist",
+        details: error.message,
+      });
+    }
+  };
+
   addCancion = async (req, res) => {
     try {
       const { id } = req.params;

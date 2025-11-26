@@ -31,6 +31,12 @@ router.get(
   playlistController.getPlaylistFollowers
 );
 router.post(
+  "/:id/follow",
+  authenticate,
+  authorizeRole([ROLES.ADMIN, ROLES.USER]),
+  playlistController.followPlaylist
+);
+router.post(
   "/",
   authenticate,
   authorizeRole([ROLES.ADMIN, ROLES.USER]),

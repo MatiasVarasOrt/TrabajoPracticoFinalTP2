@@ -107,9 +107,19 @@ class PlayListService {
     const id = Number(playlistId);
     const userId = Number(followerUserId);
 
-   
+    if (!Number.isInteger(id) || id <= 0) {
+      const error = new Error("El parametro de playlist es invalido");
+      error.name = "ValidationError";
+      throw error;
+    }
 
-    const playlist = await PlayList.findByPk(id);
+    if (!Number.isInteger(userId) || userId <= 0) {
+      const error = new Error("El usuario que sigue es obligatorio");
+      error.name = "ValidationError";
+      throw error;
+    }
+
+    const playlist = await this.playlist.findByPk(id);
     if (!playlist) {
       throw new Error("Playlist no encontrada");
     }
