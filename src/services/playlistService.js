@@ -30,8 +30,7 @@ class PlayListService {
 
   async createPlaylist(data) {
     // Aceptamos tanto userId como UserId para mayor flexibilidad
-    const { Name, userId, UserId, Followers = null } = data;
-    const finalUserId = userId ?? UserId;
+    const { Name, userId, Followers = [] } = data;
 
     if (!Name || Name.trim() === "") {
       const error = new Error("El campo Name es obligatorio");
@@ -39,7 +38,7 @@ class PlayListService {
       throw error;
     }
 
-    if (finalUserId === undefined || finalUserId === null) {
+    if (!userId) {
       const error = new Error("El campo UserId es obligatorio");
       error.name = "ValidationError";
       throw error;
@@ -47,7 +46,7 @@ class PlayListService {
 
     return await PlayList.create({
       Name: Name.trim(),
-      userId: finalUserId,
+      userId,
       Followers,
     });
   }
@@ -60,7 +59,9 @@ class PlayListService {
 
     const { Name } = data;
     if (!Name || Name.trim() === "") {
-      const error = new Error("El campo Name es obligatorio para la actualización");
+      const error = new Error(
+        "El campo Name es obligatorio para la actualización"
+      );
       error.name = "ValidationError";
       throw error;
     }
@@ -93,7 +94,6 @@ class PlayListService {
     return {
       IdPlaylist: playlist.IdPlaylist,
       Name: playlist.Name,
-      UserId: playlist.userId,
       userId: playlist.userId,
       Followers: playlist.Followers || [],
     };

@@ -1,6 +1,5 @@
 import { generateToken } from "../utils/jwt.js";
 import { Op } from "sequelize";
-import Role from "../models/Role.js";
 
 class UserService {
   constructor(user, role) {
