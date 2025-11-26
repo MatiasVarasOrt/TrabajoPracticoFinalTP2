@@ -103,102 +103,36 @@ class PlayListService {
     };
   }
 
-  async addCancionToPlaylist(playlistId, cancionId) {
-    // Validar que la playlist existe
-    await this.getPlaylistById(playlistId);
+  async followPlaylist(playlistId, followerUserId) {
+    const id = Number(playlistId);
+    const userId = Number(followerUserId);
 
-    // Validar que la canción existe
-    const cancion = await this.cancion.findByPk(cancionId);
-    if (!cancion) {
-      throw new Error("Canción no encontrada");
+   
+
+    const playlist = await PlayList.findByPk(id);
+    if (!playlist) {
+      throw new Error("Playlist no encontrada");
     }
 
-    // Verificar si ya existe la relación
-    const existe = await this.playlistCanciones.findOne({
-      where: {
-        IdPlaylist: playlistId,
-        IdCancion: cancionId,
-      },
-    });
+    const normalizedFollowers = (playlist.Followers ?? [])
+      .map((follower) => Number(follower))
+      .filter((follower) => Number.isInteger(follower) && follower > 0);
 
-    if (existe) {
-      const error = new Error("La canción ya está en la playlist");
-      error.name = "ValidationError";
-      throw error;
+    const alreadyFollowing = normalizedFollowers.includes(userId);
+    if (!alreadyFollowing) {
+      normalizedFollowers.push(userId);
     }
 
-    // Crear la relación
-    await this.playlistCanciones.create({
-      IdPlaylist: playlistId,
-      IdCancion: cancionId,
-    });
+    playlist.Followers = normalizedFollowers;
+    await playlist.save();
 
     return {
-      message: "Canción agregada a la playlist exitosamente",
-      playlistId,
-      cancionId,
+      IdPlaylist: playlist.IdPlaylist,
+      Name: playlist.Name,
+      userId: playlist.userId,
+      Followers: normalizedFollowers,
+      alreadyFollowing,
     };
-  }
-
-  async getCancionesByPlaylistId(playlistId) {
-    // Validar que la playlist existe
-    await this.getPlaylistById(playlistId);
-
-    const canciones = await this.playlistCanciones.findAll({
-      where: { IdPlaylist: playlistId },
-      include: [
-        {
-          model: this.cancion,
-          as: "Cancion",
-          attributes: ["IdCancion", "Name"],
-          include: [
-            {
-              model: this.cancion.associations.Artista.target,
-              as: "Artista",
-              attributes: ["IdArtista", "Name"],
-            },
-          ],
-        },
-      ],
-    });
-
-    return canciones.map((cancion) => ({
-      IdCancion: cancion.Cancion.IdCancion,
-      Name: cancion.Cancion.Name,
-      Artista: cancion.Cancion.Artista,
-    }));
-  }
-
-  async removeCancionFromPlaylist(playlistId, cancionId) {
-    // Validar que la playlist existe
-    await this.getPlaylistById(playlistId);
-
-    const relacion = await this.playlistCanciones.findOne({
-      where: {
-        IdPlaylist: playlistId,
-        IdCancion: cancionId,
-      },
-    });
-
-    if (!relacion) {
-      throw new Error("La canción no está en la playlist");
-    }
-
-    await relacion.destroy();
-
-    return {
-      message: "Canción eliminada de la playlist exitosamente",
-    };
-  }
-
-  async getCancionesCount(playlistId) {
-    await this.getPlaylistById(playlistId);
-
-    const count = await this.playlistCanciones.count({
-      where: { IdPlaylist: playlistId },
-    });
-
-    return { playlistId, count };
   }
 }
 
