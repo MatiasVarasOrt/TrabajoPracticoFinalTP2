@@ -1,6 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database.js";
 import bcrypt from "bcrypt";
+import { ROLES } from "./rolesEnum.js";
 
 class User extends Model {
   static async compare(passPlainText, hashPass) {
@@ -29,7 +30,7 @@ User.init(
     roleId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 2,
+      defaultValue: ROLES.USER,
     },
   },
   {

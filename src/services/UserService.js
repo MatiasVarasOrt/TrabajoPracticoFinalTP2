@@ -48,6 +48,7 @@ class UserService {
       id: user.id,
       name: user.name,
       mail: user.mail,
+      roleId: user.roleId,
     };
 
     const token = generateToken(payload);

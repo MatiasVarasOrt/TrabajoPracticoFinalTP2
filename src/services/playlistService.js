@@ -23,13 +23,15 @@ class PlayListService {
     }
 
     return await PlayList.findAll({
-      where: { UserId: userId },
+      where: { userId },
       order: [["IdPlaylist", "DESC"]],
     });
   }
 
   async createPlaylist(data) {
-    const { Name, UserId, Followers = null } = data;
+    // Aceptamos tanto userId como UserId para mayor flexibilidad
+    const { Name, userId, UserId, Followers = null } = data;
+    const finalUserId = userId ?? UserId;
 
     if (!Name || Name.trim() === "") {
       const error = new Error("El campo Name es obligatorio");
@@ -37,7 +39,7 @@ class PlayListService {
       throw error;
     }
 
-    if (UserId === undefined || UserId === null) {
+    if (finalUserId === undefined || finalUserId === null) {
       const error = new Error("El campo UserId es obligatorio");
       error.name = "ValidationError";
       throw error;
@@ -45,7 +47,7 @@ class PlayListService {
 
     return await PlayList.create({
       Name: Name.trim(),
-      UserId,
+      userId: finalUserId,
       Followers,
     });
   }
@@ -81,7 +83,7 @@ class PlayListService {
 
   async getPlaylistFollowers(id) {
     const playlist = await PlayList.findByPk(id, {
-      attributes: ["IdPlaylist", "Name", "UserId", "Followers"],
+      attributes: ["IdPlaylist", "Name", "userId", "Followers"],
     });
 
     if (!playlist) {
@@ -91,7 +93,8 @@ class PlayListService {
     return {
       IdPlaylist: playlist.IdPlaylist,
       Name: playlist.Name,
-      UserId: playlist.UserId,
+      UserId: playlist.userId,
+      userId: playlist.userId,
       Followers: playlist.Followers || [],
     };
   }
