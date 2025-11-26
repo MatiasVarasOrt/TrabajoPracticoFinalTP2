@@ -170,6 +170,68 @@ async addCancionToPlaylist(playlistId, cancionId) {
       alreadyFollowing,
     };
   }
+
+  async getCancionesByPlaylistId(playlistId) {
+    // Validar que la playlist existe
+    await this.getPlaylistById(playlistId);
+
+    const canciones = await this.playlistCanciones.findAll({
+      where: { IdPlaylist: playlistId },
+      include: [
+        {
+          model: this.cancion,
+          as: "Cancion",
+          attributes: ["IdCancion", "Name"],
+          include: [
+            {
+              model: this.cancion.associations.Artista.target,
+              as: "Artista",
+              attributes: ["IdArtista", "Name"],
+            },
+          ],
+        },
+      ],
+    });
+
+    return canciones.map((cancion) => ({
+      IdCancion: cancion.Cancion.IdCancion,
+      Name: cancion.Cancion.Name,
+      Artista: cancion.Cancion.Artista,
+    }));
+  }
+
+  async removeCancionFromPlaylist(playlistId, cancionId) {
+    // Validar que la playlist existe
+    await this.getPlaylistById(playlistId);
+
+    const relacion = await this.playlistCanciones.findOne({
+      where: {
+        IdPlaylist: playlistId,
+        IdCancion: cancionId,
+      },
+    });
+
+    if (!relacion) {
+      throw new Error("La canción no está en la playlist");
+    }
+
+    await relacion.destroy();
+
+    return {
+      message: "Canción eliminada de la playlist exitosamente",
+    };
+  }
+
+  async getCancionesCount(playlistId) {
+    await this.getPlaylistById(playlistId);
+
+    const count = await this.playlistCanciones.count({
+      where: { IdPlaylist: playlistId },
+    });
+
+    return { playlistId, count };
+  }
 }
+
 
 export default PlayListService;
