@@ -27,7 +27,8 @@ const artistaController = new ArtistaController(artistaServiceInstance);
 const playlistService = new PlayListService(
   PlayList,
   Cancion,
-  PlaylistsCanciones
+  PlaylistsCanciones,
+  User,
 );
 const playlistController = new PlayListController(playlistService);
 

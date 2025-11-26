@@ -1,8 +1,9 @@
 class PlayListService {
-  constructor(playlist, cancion, playlistCanciones) {
+  constructor(playlist, cancion, playlistCanciones, user) {
     this.playlist = playlist;
     this.cancion = cancion;
     this.playlistCanciones = playlistCanciones;
+    this.user = user;
   }
 
   async getAllPlaylists() {
@@ -132,11 +133,21 @@ async addCancionToPlaylist(playlistId, cancionId) {
       throw new Error("Playlist no encontrada");
     }
 
+    const idFollowers = playlist.Followers;
+    let users = [];
+    
+    if(idFollowers.length > 0) {
+      users = await this.user.findAll({
+        where: { id: idFollowers },
+        attributes: ["id", "name"]
+      });
+    }
     return {
       IdPlaylist: playlist.IdPlaylist,
       Name: playlist.Name,
       userId: playlist.userId,
       Followers: playlist.Followers || [],
+      Users: users,
     };
   }
 
