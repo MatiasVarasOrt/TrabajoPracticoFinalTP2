@@ -2,48 +2,71 @@ import Artista from "./Artista.js";
 import Cancion from "./Cancion.js";
 import User from "./User.js";
 import Role from "./Role.js";
-import Playlist from "./PlayList.js";
+import PlayList from "./PlayList.js";
+import PlaylistsCanciones from "./PlaylistsCanciones.js";
 
-/**
- * Inicializa todas las asociaciones entre modelos
- * Debe ser llamado una vez al iniciar la aplicación
- */
 export function initAssociations() {
-  // Asociación: Un Artista tiene muchas Canciones
+  // un artista tiene muchas canciones
   Artista.hasMany(Cancion, {
     foreignKey: "IdArtista",
     as: "Canciones",
   });
 
-  // Asociación: Una Canción pertenece a un Artista
+  // una canción pertenece a un artista
   Cancion.belongsTo(Artista, {
     foreignKey: "IdArtista",
     as: "Artista",
   });
 
-  // Asociación: Un Usuario pertenece a un Rol
+  // un usuario pertenece a un rol
   User.belongsTo(Role, {
     foreignKey: "roleId",
     as: "Role",
   });
 
-  // Asociación: Un Rol tiene muchos Usuarios
+  // un rol tiene muchos usuarios
   Role.hasMany(User, {
     foreignKey: "roleId",
     as: "Users",
   });
 
-  // Asociación: Un Usuario tiene muchas Playlists
-  User.hasMany(Playlist, {
+  // un usuario tiene muchas playlists
+  User.hasMany(PlayList, {
     foreignKey: "userId",
-    as: "playlists",
+    as: "Playlists",
   });
 
-  // Asociación: Una Playlist pertenece a un Usuario
-  Playlist.belongsTo(User, {
+  // una playlist pertenece a un usuario
+  PlayList.belongsTo(User, {
     foreignKey: "userId",
     as: "Owner",
   });
 
-  console.log("✅ Asociaciones de modelos inicializadas");
+  // una playlist tiene muchas canciones (muchos a muchos)
+  PlayList.belongsToMany(Cancion, {
+    through: PlaylistsCanciones,
+    foreignKey: "IdPlaylist",
+    otherKey: "IdCancion",
+    as: "Canciones",
+  });
+
+  // una canción pertenece a muchas playlists (muchos a muchos)
+  Cancion.belongsToMany(PlayList, {
+    through: PlaylistsCanciones,
+    foreignKey: "IdCancion",
+    otherKey: "IdPlaylist",
+    as: "Playlists",
+  });
+
+  PlaylistsCanciones.belongsTo(Cancion, {
+    foreignKey: "IdCancion",
+    as: "Cancion",
+  });
+
+  PlaylistsCanciones.belongsTo(PlayList, {
+    foreignKey: "IdPlaylist",
+    as: "Playlist",
+  });
+
+  console.log("Asociaciones de modelos inicializadas correctamente");
 }

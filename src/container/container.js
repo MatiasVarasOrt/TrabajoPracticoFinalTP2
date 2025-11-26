@@ -8,6 +8,10 @@ import Cancion from "../models/Cancion.js";
 import artistaService from "../services/artistaService.js";
 import ArtistaController from "../controllers/ArtistaController.js";
 import Artista from "../models/Artista.js";
+import PlayList from "../models/PlayList.js";
+import PlaylistsCanciones from "../models/PlaylistsCanciones.js";
+import PlayListService from "../services/playlistService.js";
+import PlayListController from "../controllers/PlayListController.js";
 
 const userService = new UserService(User, Role);
 const userController = new UserController(userService);
@@ -20,4 +24,16 @@ const cancionController = new CancionController(cancionService);
 const artistaServiceInstance = new artistaService(Artista);
 const artistaController = new ArtistaController(artistaServiceInstance);
 
-export { cancionController, userController, artistaController };
+const playlistService = new PlayListService(
+  PlayList,
+  Cancion,
+  PlaylistsCanciones
+);
+const playlistController = new PlayListController(playlistService);
+
+export {
+  cancionController,
+  userController,
+  artistaController,
+  playlistController,
+};

@@ -21,7 +21,6 @@ export default function authenticate(req, res, next) {
       });
     }
 
-    // guardamos la info en req.user
     req.user = user;
 
     next();
