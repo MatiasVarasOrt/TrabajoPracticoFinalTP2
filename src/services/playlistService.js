@@ -6,7 +6,7 @@ class PlayListService {
   }
 
   async getAllPlaylists() {
-    return await PlayList.findAll({
+    return await this.playlist.findAll({
       order: [["Name", "ASC"]],
     });
   }

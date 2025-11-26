@@ -1,11 +1,9 @@
 import express from "express";
-import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import { PORT } from "./config/config.js";
 import { testConnection } from "./config/database.js";
 import router from "./routes/router.js";
 import { initAssociations } from "./models/associations.js";
-import cookieParser from "cookie-parser";
-
-dotenv.config();
 
 const app = express();
 
@@ -42,8 +40,6 @@ app.use((req, res) => {
 });
 
 // ========== INICIAR SERVIDOR ==========
-const PORT = process.env.PORT || 3000;
-
 const startServer = async () => {
   try {
     console.log("🚀 Iniciando Mini Spotify API...");
@@ -57,7 +53,9 @@ const startServer = async () => {
       console.log(`\n✅ Servidor Express escuchando en el puerto ${PORT}`);
       console.log(`API: http://localhost:${PORT}`);
       console.log(`Canciones: http://localhost:${PORT}/api/canciones`);
-      console.log(`Playlists: http://localhost:${PORT}/api/playlists\n`);
+      console.log(`Playlists: http://localhost:${PORT}/api/playlists`);
+      console.log(`Artistas: http://localhost:${PORT}/api/artistas`);
+      console.log(`Usuarios: http://localhost:${PORT}/api/users`);
     });
   } catch (error) {
     console.error("❌ Error al iniciar el servidor:", error);

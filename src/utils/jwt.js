@@ -1,19 +1,12 @@
 import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../config/config.js";
 
-const secret = process.env.JWT_SECRET;
-
-console.log("🔐 JWT_SECRET cargado:", secret);
+console.log("🔐 JWT_SECRET cargado:", JWT_SECRET);
 
 export function generateToken(payload) {
-  if (!secret) {
-    throw new Error("JWT_SECRET no está definido en las variables de entorno");
-  }
-  return jwt.sign(payload, secret, { expiresIn: "1h" });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
 }
 
 export function verifyToken(token) {
-  if (!secret) {
-    throw new Error("JWT_SECRET no está definido en las variables de entorno");
-  }
-  return jwt.verify(token, secret);
+  return jwt.verify(token, JWT_SECRET);
 }
