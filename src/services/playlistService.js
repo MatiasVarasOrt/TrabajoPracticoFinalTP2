@@ -32,6 +32,43 @@ class PlayListService {
     });
   }
 
+async addCancionToPlaylist(playlistId, cancionId) {
+    // Validar que la playlist existe
+    await this.getPlaylistById(playlistId);
+
+    // Validar que la canción existe
+    const cancion = await this.cancion.findByPk(cancionId);
+    if (!cancion) {
+      throw new Error("Canción no encontrada");
+    }
+
+    // Verificar si ya existe la relación
+    const existe = await this.playlistCanciones.findOne({
+      where: {
+        IdPlaylist: playlistId,
+        IdCancion: cancionId,
+      },
+    });
+
+    if (existe) {
+      const error = new Error("La canción ya está en la playlist");
+      error.name = "ValidationError";
+      throw error;
+    }
+
+    // Crear la relación
+    await this.playlistCanciones.create({
+      IdPlaylist: playlistId,
+      IdCancion: cancionId,
+    });
+
+    return {
+      message: "Canción agregada a la playlist exitosamente",
+      playlistId,
+      cancionId,
+    };
+  }
+
   async createPlaylist(data) {
     // Aceptamos tanto userId como UserId para mayor flexibilidad
     const { Name, userId, Followers = [] } = data;
