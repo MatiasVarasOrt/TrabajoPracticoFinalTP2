@@ -98,6 +98,38 @@ class PlayListService {
       Followers: playlist.Followers || [],
     };
   }
+
+  async followPlaylist(playlistId, followerUserId) {
+    const id = Number(playlistId);
+    const userId = Number(followerUserId);
+
+   
+
+    const playlist = await PlayList.findByPk(id);
+    if (!playlist) {
+      throw new Error("Playlist no encontrada");
+    }
+
+    const normalizedFollowers = (playlist.Followers ?? [])
+      .map((follower) => Number(follower))
+      .filter((follower) => Number.isInteger(follower) && follower > 0);
+
+    const alreadyFollowing = normalizedFollowers.includes(userId);
+    if (!alreadyFollowing) {
+      normalizedFollowers.push(userId);
+    }
+
+    playlist.Followers = normalizedFollowers;
+    await playlist.save();
+
+    return {
+      IdPlaylist: playlist.IdPlaylist,
+      Name: playlist.Name,
+      userId: playlist.userId,
+      Followers: normalizedFollowers,
+      alreadyFollowing,
+    };
+  }
 }
 
 export default new PlayListService();

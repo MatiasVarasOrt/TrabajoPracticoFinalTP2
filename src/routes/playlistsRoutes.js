@@ -7,6 +7,7 @@ import {
   getPlaylistFollowers,
   getPlaylistsByUserId,
   updatePlaylistName,
+  followPlaylist,
 } from "../controllers/PlayListController.js";
 import authenticate from "../middlewares/authenticate.js";
 import authorizeRole from "../middlewares/authorizeRole.js";
@@ -18,6 +19,7 @@ router.get("/", authenticate, authorizeRole([ROLES.ADMIN]), getAllPlaylists);
 router.get("/user/:userId", authenticate, authorizeRole([ROLES.ADMIN]), getPlaylistsByUserId);
 router.get("/:id", authenticate, authorizeRole([ROLES.ADMIN]), getPlaylistById);
 router.get("/:id/followers", authenticate, authorizeRole([ROLES.ADMIN, ROLES.USER]), getPlaylistFollowers);
+router.post("/:id/follow", authenticate, authorizeRole([ROLES.ADMIN, ROLES.USER]), followPlaylist);
 router.post("/", authenticate, authorizeRole([ROLES.ADMIN, ROLES.USER]), createPlaylist);
 router.put("/:id", authenticate, authorizeRole([ROLES.ADMIN]), updatePlaylistName);
 router.delete("/:id", authenticate, authorizeRole([ROLES.ADMIN]), deletePlaylist);
