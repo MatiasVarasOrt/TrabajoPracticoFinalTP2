@@ -70,9 +70,9 @@ async addCancionToPlaylist(playlistId, cancionId) {
     };
   }
 
-  async createPlaylist(data) {
-    // Aceptamos tanto userId como UserId para mayor flexibilidad
-    const { Name, userId, Followers = [] } = data;
+  async createPlaylist(data , userId) {
+
+    const { Name, Followers = [] } = data;
 
     if (!Name || Name.trim() === "") {
       const error = new Error("El campo Name es obligatorio");

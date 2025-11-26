@@ -76,7 +76,8 @@ class PlayListController {
 
   createPlaylist = async (req, res) => {
     try {
-      const playlist = await this.playlistService.createPlaylist(req.body);
+      const userId = req.user?.id ?? req.body.userId ?? req.body.UserId;
+      const playlist = await this.playlistService.createPlaylist(req.body, userId);
       res.status(201).json({
         success: true,
         message: "Playlist creada exitosamente",
